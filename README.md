@@ -1,2 +1,2 @@
-# SLE
-Sentence Length Evaluator
+# Sentence Length Evaluator (SLE)
+By: Henry Xue
