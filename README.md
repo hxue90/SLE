@@ -1,3 +1,3 @@
 # Sentence Length Evaluator (SLE)
 By: Henry Xue
-Hello, my name is...
+Hello, my name is... Henry Xue
