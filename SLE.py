@@ -21,7 +21,7 @@ def inputHelp():
     printd("HELP")
     pInputsBHelp = True
 
-    while pInputsBHelp: ## TO BE FINISHED
+    while pInputsBHelp:
         print("\nPlease input the number for the help topic you're seeking:")
         print("1 - About SLE")
         print("2 - Installing SLE")
@@ -35,38 +35,41 @@ def inputHelp():
         print("7 - Exit help")
         pInputsHelp = input("-> ").lower()
         if pInputsHelp == "1":
-            print("About SLE")
-            print("Read the SRS")
+            print("\nAbout SLE\nSLE aka Sentence Length Evaluator is an application used to", end=" ")
+            print("help analyze, reported and track average sentence length for plain text reports.", end=" ")
+            print("It help users avoid using over-long-run-on sentences.")
         elif pInputsHelp == "2":
-            print("Installing SLE")
-            print("No installation needed")
+            print("\nInstalling SLE")
+            print("No installation of SLE is required.")
         elif pInputsHelp == "3":
-            print("Launching SLE")
-            print("Type 'python SLE.py' in command line interface")
+            print("\nLaunching SLE")
+            print("On command line interface, change directory to SLE directory.", end=" ")
+            print("Type 'python SLE.py' *Python 3.5.2 is required*")
         elif pInputsHelp == "4":
-            print("Changing SLE parameters")
-            print("When prompt to change parameters, you can change parameters.")
+            print("\nChanging SLE parameters")
+            print("Users will be prompt to change SLE parameters such as 'minimum characters in a word',", end=" ")
+            print("'maximum words in sentence', 'punctuation marking end of sentence'. Select valid options when prompt.")
         elif pInputsHelp == "4.1":
-            print("Changing minimum characters in word")
-            print("When prompt to change parameters, select (1).")
+            print("\nChanging minimum characters in word")
+            print("When prompt to change SLE parameters, select (1).")
         elif pInputsHelp == "4.2":
-            print("Changing maximum words in sentence")
-            print("When prompt to change parameters, select (2).")
+            print("\nChanging maximum words in sentence")
+            print("When prompt to change SLE parameters, select (2).")
         elif pInputsHelp == "4.3":
-            print("Changing punctuation marking end of sentence")
-            print("When prompt to change parameters, select (3).")
+            print("\nChanging punctuation marking end of sentence")
+            print("When prompt to change SLE parameters, select (3).")
         elif pInputsHelp == "5":
-            print("Analyzing a report")
-            print("When prompt for report, type report with extension (*.txt).")
+            print("\nAnalyzing a report")
+            print("When prompt for user report, type user report with extension (*.txt).")
         elif pInputsHelp == "6":
-            print("Tracking historical results")
-            print("Historical results are tracked in a file of choice according to...")
-            print("file | average")
+            print("\nTracking historical results")
+            print("Historical results are tracked in a SLE report file of choice.", end=" ")
+            print("Historical results include file name and average sentence length.")
         elif pInputsHelp == "7":
             printd("Exit help")
             pInputsBHelp = False
         else:
-            print("ERROR: Invalid Input!!")
+            print("ERROR: Invalid input for help topic.")
 
 def validateInput(vInput):
     printd("VALIDATE INPUT")
@@ -94,23 +97,23 @@ def parametersInput():
                 print("\nThe smallest word I should count contains how many letters?")
                 try:
                     miniC = validateInput(input("-> ").lower())
-                    if miniC.lower() == "help":
+                    if miniC == "help":
                         continue
                     miniC = int(miniC)
                     break
                 except:
-                    print("ERROR: Invalid Input!!")
+                    print("ERROR: Invalid input for minimum number of characters in a word.")
         elif pInputs == "2":
             while True:
                 print("\nA good sentence should have how many words, maximum?")
                 try:
                     maxiW = validateInput(input("-> ").lower())
-                    if maxiW.lower() == "help":
+                    if maxiW == "help":
                         continue
                     maxiW = int(maxiW)
                     break
                 except:
-                    print("ERROR: Invalid Input!!")
+                    print("ERROR: Invalid input for maximum words in a sentence.")
         elif pInputs == "3":
             while True:
                 print("\nWhat punctuation should mark the end of sentence? Please list all.")
@@ -120,7 +123,7 @@ def parametersInput():
                         continue
                     break
                 except:
-                    print("ERROR: Invalid Input!!")
+                    print("ERROR: Invalid input for punctuation.")
         elif pInputs == "4":
             printd("None")
             pInputsB = False
@@ -132,7 +135,7 @@ def parametersInput():
         elif pInputs == "help":
             inputHelp()
         else:
-            print("ERROR: Invalid Input!!")
+            print("ERROR: Invalid input for parameters.")
 
 def requestReport():
     printd("REQUEST REPORT")
@@ -145,8 +148,8 @@ def requestReport():
         if rInputsFile == "help":
             inputHelp()
         else:
-            if rInputsFile[-4:].lower() != ".txt":
-                print("ERROR: Invalid Extension!!")
+            if rInputsFile[-4:] != ".txt":
+                print("ERROR: Invalid file extension.")
                 continue
             fileReport = rInputsFile
 
@@ -180,8 +183,8 @@ def requestSLEReport():
         elif rInputsFile == "help":
             inputHelp()
         else:
-            if rInputsFile[-4:].lower() != ".txt":
-                print("ERROR: Invalid Extension!!")
+            if rInputsFile[-4:] != ".txt":
+                print("ERROR: Invalid file extension.")
                 continue
             filesleReport = rInputsFile
 
@@ -196,6 +199,10 @@ def requestSLEReport():
                 continue
 
             savesleReport = "y"
+
+            fileOpen = open("SLE.tmp", "w") # Clear out SLE.tmp
+            fileOpen.close()
+            
             checkReport()
             rInputs = False
 
@@ -232,17 +239,19 @@ def checkReport():
 
     blankLines(listReportS)
 
-    for i in listReportS:
+    for i in listReportS: # Check word length O(n^2)
         for j in i.split():
-            if len(j) >= miniC: # Check Char Length
+            if len(j) >= miniC:
                 listReportW.append(j)
 
     blankLines(listReportW)
     
     print("\nIn " + fileReport + ",")
+    saveTmp("\nIn " + fileReport + ",")
 
     reportMean = len(listReportW)/len(listReportS)
     print("The average sentence length is " + str(reportMean) + ".")
+    saveTmp("The average sentence length is " + str(reportMean) + ".")
 
     listReportTMP = [] # Remove non-words
     for i in listReportS:
@@ -259,21 +268,34 @@ def checkReport():
             listLongS.append(i)
     
     print("These sentences are too long:")
+    saveTmp("These sentences are too long:")
     if len(listLongS) == 0:
         print("None")
+        saveTmp("None")
     else:
+        counter = 0
         for i in listLongS:
-            print(i.strip())
+            counter += 1
+            print(str(counter) + ": " +i.strip())
+            saveTmp(str(counter) + ": " +i.strip())
 
     fileOpen = open(filesleReport, "r")
+    counter = 0
     for i in fileOpen:
-        listHistorical.append(i.replace("\n", "").split(" | ")[1])
-        historicalMean += float(i.replace("\n", "").split(" | ")[1])
+        counter += 1
+        try:
+            listHistorical.append(i.replace("\n", "").split(" | ")[1])
+            historicalMean += float(i.replace("\n", "").split(" | ")[1])
+        except:
+            print("ERROR: Line " + str(counter) + " in SLE report is invalid so skipped.")
+            continue
     fileOpen.close()
     historicalMean = (historicalMean+reportMean)/(len(listHistorical)+1)
     
     print("Your historical average sentence length is " + str(historicalMean) + ".")
+    saveTmp("Your historical average sentence length is " + str(historicalMean) + ".")
     print("Previous results:")
+    saveTmp("Previous results:")
     previousResults()
 
     if savesleReport == "y":
@@ -284,12 +306,25 @@ def checkReport():
         
     anotherReport()
 
+def saveTmp(saveStr):
+    fileOpen = open("SLE.tmp", "a")
+    fileOpen.write(saveStr + "\n")
+    fileOpen.close()
+
 def previousResults():
     fileOpen = open(filesleReport, "r")
+    counter = 0
     for i in fileOpen:
-        tmpTxt = i.replace("\n", "").split(" | ")
-        print("In " + tmpTxt[0] + ", the average sentence length is ", end="")
-        print(tmpTxt[1] + "w/s.")
+        counter += 1
+        try:
+            tmpTxt = i.replace("\n", "").split(" | ")
+            float(tmpTxt[1]) # Check invalid lines
+            print("In " + tmpTxt[0] + ", the average sentence length is ", end="")
+            saveTmp("In " + tmpTxt[0] + ", the average sentence length is " + tmpTxt[1] + "w/s.")
+            print(tmpTxt[1] + "w/s.")
+        except:
+            print("ERROR: Line " + str(counter) + " in SLE report is invalid so skipped.")
+            continue
     fileOpen.close()
 
 def anotherReport():
@@ -308,7 +343,7 @@ def anotherReport():
             exit()
         else:
             if rInputsFile[-4:] != ".txt":
-                print("ERROR: Invalid Extension!!")
+                print("ERROR: Invalid file extension.")
                 continue
             fileReport = rInputsFile
 
