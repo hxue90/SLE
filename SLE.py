@@ -3,13 +3,15 @@ Sentence Length Evaluator v1.0
 By Henry Xue
 Python 3.5.2
 '''
+import os
+
 
 miniC = 3
 maxiW = 15
 delimiter = ".,!;'?"
-fileReport = "asd.txt"
+fileReport = ""
 savesleReport = "y"
-filesleReport = "sdf.txt"
+filesleReport = ""
 
 debug = False
 
@@ -267,42 +269,50 @@ def checkReport():
         if len(i.split()) > maxiW:
             listLongS.append(i)
     
-    print("These sentences are too long:")
-    saveTmp("These sentences are too long:")
     if len(listLongS) == 0:
-        print("None")
-        saveTmp("None")
+        print("There are no too long sentences.")
+        saveTmp("There are no too long sentences.")
     else:
+        print("These sentences are too long:")
+        saveTmp("These sentences are too long:")
         counter = 0
         for i in listLongS:
             counter += 1
             print(str(counter) + ": " +i.strip())
             saveTmp(str(counter) + ": " +i.strip())
 
-    fileOpen = open(filesleReport, "r")
-    counter = 0
-    for i in fileOpen:
-        counter += 1
-        try:
-            listHistorical.append(i.replace("\n", "").split(" | ")[1])
-            historicalMean += float(i.replace("\n", "").split(" | ")[1])
-        except:
-            print("ERROR: Line " + str(counter) + " in SLE report is invalid so skipped.")
-            continue
-    fileOpen.close()
-    historicalMean = (historicalMean+reportMean)/(len(listHistorical)+1)
-    
-    print("Your historical average sentence length is " + str(historicalMean) + ".")
-    saveTmp("Your historical average sentence length is " + str(historicalMean) + ".")
-    print("Previous results:")
-    saveTmp("Previous results:")
-    previousResults()
-
     if savesleReport == "y":
+        if os.stat(filesleReport).st_size == 0:
+            print("There are no historical average sentence length.")
+            saveTmp("There are no historical average sentence length.")
+            return
+        
+        fileOpen = open(filesleReport, "r")
+        counter = 0
+        for i in fileOpen:
+            counter += 1
+            try:
+                listHistorical.append(i.replace("\n", "").split(" | ")[1])
+                historicalMean += float(i.replace("\n", "").split(" | ")[1])
+            except:
+                print("ERROR: Line " + str(counter) + " in SLE report is invalid so skipped.")
+        fileOpen.close()
+        historicalMean = (historicalMean+reportMean)/(len(listHistorical)+1)
+
+        print("Your historical average sentence length is " + str(historicalMean) + ".")
+        saveTmp("Your historical average sentence length is " + str(historicalMean) + ".")
+
+        print("Previous results:")
+        saveTmp("Previous results:")
+        previousResults()
+
         fileOpen = open(filesleReport, "a")
         fileOpen.write(fileReport + " | " + str(reportMean) + "\n")
         fileOpen.close()
         printd("SAVED")
+    else:
+        print("There are no historical average sentence length.")
+        saveTmp("There are no historical average sentence length.")
         
     anotherReport()
 
