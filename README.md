@@ -1,3 +1,12 @@
-# Sentence Length Evaluator (SLE)
-By: Henry Xue
-Hello, my name is...
+#Sentence Length Evaluator (SLE)
+Author
+-
+
+Description
+-
+
+Changelog
+-
+
+Instructions
+-
